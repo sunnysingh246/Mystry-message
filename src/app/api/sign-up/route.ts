@@ -14,15 +14,24 @@ export async function POST(request: Request) {
     if (existingUserVerfiedByUsername) {
         return Response.json({
             success: false,
-            message: "Username is  already taken"
+            message: "User already exists with this email"
         }, { status: 400 })
+    } else {
+        const hashedPassword = await bcrypt.hash(password, 10)
+        existingUserByEmail.password = hashedPassword;
+        existingUserByEmail.verifyCode = verifyCode;
+        existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
+        await existingUserByEmail.save()
+
     }
 
     const existingUserByEmail = await userModel.findOne({ email })
     const verifyCode = Math.floor(10000 + Math.random() * 900000).toString()
 
     if (existingUserByEmail) {
-        //TODO:back here
+        if (existingUserVerfiedByUsername) {
+            return
+        }
     } else {
         const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -48,6 +57,18 @@ export async function POST(request: Request) {
             userName,
             verifyCode
         )
+
+        if (!emailResponse.success) {
+            return Response.json({
+                success: false,
+                message: emailResponse.message
+            }, { status: 500 })
+        }
+
+        return Response.json({
+            success: true,
+            message: "User registered successfully.Please verify your email"
+        }, { status: 201 })
     }
 
     try {
