@@ -21,7 +21,7 @@ const messageSchema: Schema<Message> = new Schema({
 
 
 export interface User extends Document {
-    userName: string,
+    username: string,
     password: string,
     email: string,
     verifyCode: string,
@@ -33,7 +33,7 @@ export interface User extends Document {
 
 const userSchema: Schema<User> = new Schema({
 
-    userName: {
+    username: {
         type: String,
         required: [true, "Username is required"],
         trim: true,
@@ -80,5 +80,5 @@ const userSchema: Schema<User> = new Schema({
 
 const userModel = (mongoose.models.User as mongoose.Model<User> || mongoose.model<User>("User", userSchema))
 
-export default { userModel }
+export default  userModel 
 

@@ -57,9 +57,9 @@ export async function POST(request: Request) {
             email,
         });
 
-        // ------------------------------------------------
+       
         // CASE 1: Email already exists
-        // ------------------------------------------------
+        
         if (existingUserByEmail) {
             // If the existing account is already verified
             if (existingUserByEmail.isVerified) {
@@ -108,9 +108,9 @@ export async function POST(request: Request) {
             );
         }
 
-        // ------------------------------------------------
+       
         // CASE 2: New user
-        // ------------------------------------------------
+        
         const newUser = new userModel({
             username,
             password: hashedPassword,
