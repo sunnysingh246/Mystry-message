@@ -118,7 +118,7 @@ export async function POST(request: Request) {
             verifyCode,
             verifyCodeExpiry,
             isVerified: false,
-            isAcceptingMessage: true,
+            isAcceptingMessages: true,
             messages: [],
         });
 
