@@ -1,62 +1,28 @@
 'use client'
-import { useSession, signIn, signOut } from "next-auth/react";
-import { FormEvent, useState } from "react";
 
-export default function Component() {
-    const { data: session } = useSession();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+import React, { useState } from 'react'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import Link from "next/link"
+import { useDebounceValue } from 'usehooks-ts'
+import {useToast} from 
 
-    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setError("");
+const page = () => {
+    const [userName, setuserName] = useState('')
+    const [userNameMessage, setuserNameMessage] = useState('')
+    const [isCheckingUserName, setIsCheckingUserName] = useState(false)
+    const [isSubmiting, setIssubmiting] = useState(false)
 
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-        });
-
-        if (result?.error) {
-            setError(result.error);
-        }
-    };
-
-    if (session) {
-        return (
-            <>
-                Signed in as {session.user.email} <br />
-                <button
-                    className="bg-ora-500 px-3 py-1 m-4 rounded"
-                    onClick={() => signOut()}
-                >
-                    Sign out
-                </button>
-            </>
-        );
-    }
+    const debeounceusername = useDebounceValue(userName, 300)
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-sm mx-auto p-6">
-            <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="Email"
-                className="border rounded px-3 py-2"
-            />
-            <input
-                type="password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                placeholder="Password"
-                className="border rounded px-3 py-2"
-            />
-            {error && <p className="text-red-500">{error}</p>}
-            <button type="submit" className="bg-black text-white rounded px-3 py-2">
-                Sign in
-            </button>
-        </form>
-    );
+
+
+        <div>
+            page
+        </div>
+    )
 }
+
+export default page
