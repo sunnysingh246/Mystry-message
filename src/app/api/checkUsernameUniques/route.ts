@@ -2,8 +2,6 @@ import dbConnect from "@/lib/dbConnect";
 import userModel from "@/models/user.model";
 import { success, z } from "zod"
 import { userNameValidation } from "@/schemas/signUpSchema"
-import { connect } from "http2";
-import { responseCookiesToRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 
 const userNameQuerrSchema = z.object({
@@ -12,6 +10,13 @@ const userNameQuerrSchema = z.object({
 
 export async function GET(request: Request) {
     await dbConnect()
+    //TODO:use this in all other routes
+    if (request.method !== 'GET') {
+        return Response.json({
+            success: false,
+            message: "Method is not allowed"
+        }, { status: 405 })
+    }
 
     //localhost: 3000 / api / cuu ? username = "someone"
 
