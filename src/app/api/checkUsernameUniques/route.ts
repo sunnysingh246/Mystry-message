@@ -46,7 +46,7 @@ export async function GET(request: Request) {
             { username, isVerified: true }
         )
 
-        if (!existingAndVerifiedUser) {
+        if (existingAndVerifiedUser) {
             return Response.json({
                 success: false,
                 message: "Username already taken by someone try another"
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
 
         return Response.json({
             success: true,
-            message: "Username is unique ypu can go for this username"
+            message: "Username is unique you can go for this username"
         }, { status: 200 })
 
     } catch (error) {

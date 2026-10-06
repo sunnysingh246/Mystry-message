@@ -4,12 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
-import { useDebounceValue } from 'usehooks-ts'
+import { useDebounceCallback } from 'usehooks-ts'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { signUpSchema } from '@/schemas/signUpSchema'
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/apiResponse'
+import { Button } from '@/components/ui/button'
 import {
     Form,
     FormField,
@@ -30,7 +31,7 @@ const page = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
 
     const router = useRouter()
-    const deBouncedUserName = useDebounceValue(username, 300)
+    const deBounced = useDebounceCallback(setUsername, 300)
 
     //zod Implementation
     const form = useForm({
@@ -44,12 +45,12 @@ const page = () => {
 
     useEffect(() => {
         const checkUserNameUnique = async () => {
-            if (deBouncedUserName) {
+            if (username) {
                 setIsCheckigUsername(true)
                 setUsernameMessage('')
 
                 try {
-                    const response = await axios.get(`/api/checkUsernameUniques?username=${deBouncedUserName}`)
+                    const response = await axios.get(`/api/checkUsernameUniques?username=${username}`)
                     setUsernameMessage(response.data.message)
                 } catch (error) {
                     const axiosError = error as AxiosError<ApiResponse>
@@ -62,7 +63,7 @@ const page = () => {
             }
         }
         checkUserNameUnique()
-    }, [deBouncedUserName])
+    }, [username])
 
 
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
@@ -111,7 +112,7 @@ const page = () => {
                                             {...field}
                                             onChange={(e) => {
                                                 field.onChange(e)
-                                                setUsername(e.target.value)
+                                                deBounced(e.target.value)
                                             }}
                                         />
                                     </FormControl>
@@ -144,36 +145,38 @@ const page = () => {
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <Input type='password'
-                                            placeholder="username"
+                                            placeholder="Password"
                                             {...field}
-                                            onChange={(e) => {
-                                                field.onChange(e)
-                                                setUsername(e.target.value)
-                                            }}
+
                                         />
                                     </FormControl>
                                     {isCheckingUsername && <Loader2 className='animate-spin' />}
+                                    <p className={`text-sm ${usernameMessage ===
+                                        "Username is unique you can go for this username" ? 'text-green-500' : 'text-red-500'}`}>
+                                        {usernameMessage}
+                                    </p>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
 
-                        <button type='submit' disabled={isSubmitting}>
-                            {
-                                isSubmitting ? (
-                                    <>
-                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait
-                                    </>
-                                ) : ('signup')
-                            }
-                        </button>
+                        <Button type="submit" isDisabled={isSubmitting}>
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                                </>
+                            ) : (
+                                'Sign up'
+                            )}
+                        </Button>
                     </form>
                 </Form>
-                <div className='text-center mt-4'>
-                    <p>Already a member?{ }
-                        <Link href={'/sign-in'}
-                            className='text-blue-600 hover:text-blue-800'>
-                            sign In
+
+                <div className="text-center mt-4">
+                    <p>
+                        Already a member?{' '}
+                        <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+                            Sign in
                         </Link>
                     </p>
                 </div>
@@ -181,6 +184,8 @@ const page = () => {
         </div>
     )
 }
+
+
 
 
 export default page

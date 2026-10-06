@@ -9,7 +9,7 @@ export async function POST(request: Request) {
         await dbConnect();
 
         // Get data from request
-        const { username, email, password } = await request.json();
+        const { userName: username, email, password } = await request.json();
 
         // Basic validation
         if (!username || !email || !password) {
