@@ -1,30 +1,57 @@
-import Link from 'next/link'
+'use client'
+import React from 'react'
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from 'embla-carousel-autoplay'
 
-export default function Home() {
+import messages from '@/messages.json'
+
+const page = () => {
   return (
-    <main className="min-h-[calc(100vh-88px)] bg-white">
-      <div className="mx-auto flex min-h-[calc(100vh-88px)] max-w-6xl items-center justify-center px-6 py-12">
-        <div className="w-full max-w-2xl text-center">
-          <p className="mb-8 text-4xl font-semibold tracking-tight text-black md:text-5xl">
-            Mystery message
-          </p>
+    <main className='flex flex-1 flex-col items-center justify-center gap-8 px-4 py-12 md:px-24'>
+      <section className='max-w-4xl text-center'>
+        <h1 className='text-3xl md:text-5xl font-bold'>
+          Dive into the world of Anonymous conversations-where your identity remains secret.
+        </h1>
+        <p className='mt-3 md:mt-4 text-base md:text-lg'>Explore mystry message</p>
+      </section>
 
-          <div className="mb-8 text-2xl font-medium text-black md:text-4xl">
-            Share your thoughts anonymously.
-          </div>
+      <Carousel
+        plugins={[Autoplay({ delay: 2000 })]}
+        className="mx-auto w-full max-w-[10rem] sm:max-w-xs"
+      >
+        <CarouselContent>
+          {
+            messages.map((message, index) => (
+              <CarouselItem key={index}>
+                <div className="p-1">
+                  <Card>
+                    <CardHeader>
+                      {message.title}
+                    </CardHeader>
+                    <CardContent className="flex aspect-square items-center justify-center p-6">
+                      <span className="text-4xl font-semibold">{index + 1}
+                        {message.content}
+                      </span>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))
+          }
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
 
-          <p className="mb-10 text-base text-zinc-600 md:text-lg">
-            Let people send you messages without revealing who they are.
-          </p>
-
-          <Link
-            href="/sign-in"
-            className="inline-flex items-center justify-center rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition hover:bg-zinc-800"
-          >
-            Get started
-          </Link>
-        </div>
-      </div>
     </main>
   )
 }
+
+export default page

@@ -9,6 +9,7 @@ import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/apiResponse'
 import { toast } from 'sonner'
 import { Loader2 } from 'lucide-react'
+import { User } from 'next-auth'
 
 const Page = () => {
   const [messages, setMessages] = useState<Message[]>([])
