@@ -73,10 +73,9 @@ const page = () => {
                 description: response.data.message,
             })
 
-            router.replace(`/verify/${username}`)
+            router.replace(`/verify/${data.userName}`)
             setIsSubmitting(false)
         } catch (error) {
-            console.error("Error in sign up of user", error)
             const axiosError = error as AxiosError<ApiResponse>
             const errorMessage = axiosError.response?.data.message
 

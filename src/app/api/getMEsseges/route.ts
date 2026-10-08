@@ -3,51 +3,38 @@ import { authOptions } from "../auth/[...nextauth]/options";
 import dbConnect from "@/lib/dbConnect";
 import userModel from "@/models/user.model";
 import { User } from "next-auth";
-import mongoose from "mongoose";
-import { success } from "zod";
 
 
+export async function GET(_request: Request) {
+    await dbConnect();
+    const session = await getServerSession(authOptions);
+    const user = session?.user as User | undefined;
 
-export async function GET(requret: Request) {
-    await dbConnect()
-    const session = await getServerSession(authOptions)
-    const user: User = session?.user as User
-
-    if (!session || !session.user) {
+    if (!session || !session.user || !user?._id) {
         return Response.json({
             success: false,
             message: "NOT authenticated"
-        }, { status: 401 })
+        }, { status: 401 });
     }
 
-    const userId = new mongoose.Types.ObjectId(user._id)
-
     try {
-        const user = await userModel.aggregate([
+        const foundUser = await userModel.findById(user._id).select("messages");
 
-            { $match: { id: userId } },
-            { $unwind: '$messages' },
-            { $sort: { 'messages.createdAt': -1 } },
-            { $group: { _id: '$_id', messages: { $push: '$messages' } } }
-        ])
-
-        if (!user || user.length === 0) {
+        if (!foundUser) {
             return Response.json({
                 success: false,
                 message: "User not found"
-            }, { status: 401 })
+            }, { status: 404 });
         }
 
         return Response.json({
             success: true,
-            message: user[0].message
-        })
-
-    } catch (error) {
-        console.log("AN unexpected error", error)
+            messages: foundUser.messages ?? []
+        }, { status: 200 });
+    } catch {
         return Response.json({
             success: false,
             message: "Failed to get messages"
-        }, { status: 500 })
+        }, { status: 500 });
     }
 }

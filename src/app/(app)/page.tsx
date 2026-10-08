@@ -24,7 +24,7 @@ const page = () => {
 
       <Carousel
         plugins={[Autoplay({ delay: 2000 })]}
-        className="mx-auto w-full max-w-[10rem] sm:max-w-xs"
+        className="mx-auto w-full max-w-40 sm:max-w-xs"
       >
         <CarouselContent>
           {

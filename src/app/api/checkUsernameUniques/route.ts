@@ -58,8 +58,7 @@ export async function GET(request: Request) {
             message: "Username is unique you can go for this username"
         }, { status: 200 })
 
-    } catch (error) {
-        console.error("Error while checking username", error)
+    } catch {
         return Response.json(
             {
                 success: false,
